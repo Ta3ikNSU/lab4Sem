@@ -1,14 +1,21 @@
 package workflow.block;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Replace implements Block {
     @Override
-    public void execute(Vector<String> text, Vector<String> args) {
-
+    public ArrayList execute(ArrayList<String> text, Vector<String> args) throws Exception {
+        if (args.size() != 2) throw new Exception("Args for replace != 2");
+        String word = args.get(0);
+        String newWord = args.get(1);
+        for(int i = 0; i < text.size(); i++){
+            text.add(i,text.get(i).replaceAll(word, newWord));
+        }
+        return text;
     }
 
-    public blockType getType() {
-        return blockType.OTHER;
+    public BlockType getType() {
+        return BlockType.OTHER;
     }
 }

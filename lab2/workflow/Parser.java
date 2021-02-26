@@ -38,7 +38,7 @@ public class Parser {
             }
 
             if (_blocks.get(tokens.get(0)) == null) {
-                throw new Exception("");
+                throw new Exception("not enough data to work");
             }
             String key = tokens.get(0);
             tokens.remove(0);
@@ -46,14 +46,14 @@ public class Parser {
             _blocks.put(key, tokens);
         }
 
-        if (check_csed) throw new Exception("");
+        if (check_csed) throw new Exception("csed was not found");
         line = input.nextLine();
-        if (line.equals("")) throw new Exception("");
+        if (line.equals("")) throw new Exception("command sequence not found");
         String[] arg = line.split(" ");
         int wordCounter = 0;
         for (var i : arg) {
-            if (wordCounter % 2 != 0 && !i.equals("->")) throw new Exception("");
-            if (wordCounter % 2 == 0 && _blocks.get(i) == null) throw new Exception("");
+            if (wordCounter % 2 != 0 && !i.equals("->")) throw new Exception("wrong sequence format");
+            if (wordCounter % 2 == 0 && _blocks.get(i) == null) throw new Exception("block was not found");
             if (wordCounter % 2 == 0 && !i.equals("->")) _commands.add(i);
             wordCounter++;
         }
