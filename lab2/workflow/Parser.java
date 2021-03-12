@@ -1,6 +1,7 @@
 package workflow;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Vector;
@@ -10,9 +11,9 @@ public class Parser {
     private Vector<String> _commands;
 
     public Parser() {
+        _blocks = new HashMap<>();
+        _commands = new Vector<>();
     }
-
-    ;
 
     public void parse(String fileName) throws Exception {
         boolean check_csed = true;
@@ -29,19 +30,14 @@ public class Parser {
             for (var i : arg) {
                 tokens.add(i);
             }
-            if (tokens.size() < 3) {
-                if (tokens.size() == 1 && tokens.get(0).equals("csed")) {
-                    check_csed = false;
-                    break;
-                } else
-                    throw new Exception("");
+            if (tokens.size() == 1 && tokens.get(0).equals("csed")) {
+                check_csed = false;
+                break;
             }
-
-            if (_blocks.get(tokens.get(0)) == null) {
+            if (_blocks.get(tokens.get(0)) != null) {
                 throw new Exception("not enough data to work");
             }
             String key = tokens.get(0);
-            tokens.remove(0);
             tokens.remove(0);
             _blocks.put(key, tokens);
         }

@@ -9,7 +9,7 @@ public class Grep implements Block {
         if (args.size() != 1) throw new Exception("Args for grep != 1");
         String word = args.get(0);
         for(int i = 0; i < text.size(); i++){
-            if(text.get(i).lastIndexOf(word) == -1){
+            if(text.get(i).lastIndexOf(word) != -1){
                 continue;
             } else {
                 text.remove(i);

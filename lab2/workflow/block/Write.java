@@ -21,6 +21,7 @@ public class Write implements Block {
         for(var i : text){
             printWriter.println(i);
         }
+        printWriter.close();
         return new ArrayList<String>();
     }
 

@@ -10,7 +10,13 @@ public class Replace implements Block {
         String word = args.get(0);
         String newWord = args.get(1);
         for(int i = 0; i < text.size(); i++){
-            text.add(i,text.get(i).replaceAll(word, newWord));
+            String line = text.get(i);
+            line = line.replaceAll(word, newWord);
+            if(!line.equals(text.get(i))){
+                text.add(i + 1, line);
+                text.remove(i);
+            }
+//            text.add(i,text.get(i).replaceAll(word, newWord));
         }
         return text;
     }

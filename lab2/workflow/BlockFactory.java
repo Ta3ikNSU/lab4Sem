@@ -10,11 +10,11 @@ import java.util.logging.Logger;
 
 public class BlockFactory {
     private static BlockFactory factory = null;
-    private final Properties properties = new Properties();
+    private Properties properties = new Properties();
 
     private BlockFactory() throws IOException {
         Logger.getLogger("WorkFlowLogger").info("Block factory creation completed successfully");
-        InputStream input = BlockFactory.class.getClassLoader().getResourceAsStream("blocks.properties");
+        var input = BlockFactory.class.getResourceAsStream("blocks.properties");
 
         if (input != null) {
             properties.load(input);
@@ -36,7 +36,10 @@ public class BlockFactory {
     public Block createBlock(String name){
         Block block;
         try{
-            block = (Block) Class.forName(properties.getProperty(name)).getDeclaredConstructor().newInstance();
+            var classOfBlock = Class.forName(properties.getProperty(name));
+            var objectInstance = classOfBlock.getDeclaredConstructor().newInstance();
+            block = (Block) objectInstance;
+//            block = (Block) Class.forName(properties.getProperty(name)).getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             Logger.getLogger("WorkFlowLogger").warning("block " + name + " was not found");
             return null;
