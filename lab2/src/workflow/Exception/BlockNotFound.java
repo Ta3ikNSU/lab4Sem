@@ -2,15 +2,20 @@ package workflow.Exception;
 
 public class BlockNotFound extends Exception{
     public BlockNotFound() {
-        super();
+
     }
 
-    public BlockNotFound(String message) {
-        super(message);
+    public BlockNotFound(String msg) {
+        super(msg);
     }
 
-    @Override
-    public String getMessage() {
-        return super.getMessage();
+    public BlockNotFound(String msg, Throwable ex) {
+        super(msg, ex);
     }
+
+    public BlockNotFound(Throwable ex) {
+        super(ex);
+    }
+
+
 }

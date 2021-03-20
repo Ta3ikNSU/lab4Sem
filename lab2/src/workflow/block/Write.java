@@ -10,7 +10,7 @@ import java.util.Vector;
 
 public class Write implements Block {
     @Override
-    public ArrayList execute(ArrayList<String> text, Vector<String> args) throws Exception {
+    public void execute(ArrayList<String> text, Vector<String> args) throws Exception {
         if (args.size() != 1) throw new WrongNumberOfArguments("Args for write != 1");
         FileWriter fileWriter = null;
         PrintWriter printWriter = null;
@@ -24,7 +24,6 @@ public class Write implements Block {
             printWriter.println(i);
         }
         printWriter.close();
-        return new ArrayList<String>();
     }
 
     public BlockType getType() {

@@ -2,15 +2,18 @@ package workflow.Exception;
 
 public class CommandOrderError extends Exception{
     public CommandOrderError() {
-        super();
+
     }
 
-    public CommandOrderError(String message) {
-        super(message);
+    public CommandOrderError(String msg) {
+        super(msg);
     }
 
-    @Override
-    public String getMessage() {
-        return super.getMessage();
+    public CommandOrderError(String msg, Throwable ex) {
+        super(msg, ex);
+    }
+
+    public CommandOrderError(Throwable ex) {
+        super(ex);
     }
 }

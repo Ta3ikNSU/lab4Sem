@@ -7,8 +7,10 @@ import workflow.Exception.WrongWorkflowFormat;
 import javax.naming.InsufficientResourcesException;
 import java.io.File;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Parser {
+
     private final Map<String, Vector<String>> _blocks;
     private final Vector<String> _commands;
 

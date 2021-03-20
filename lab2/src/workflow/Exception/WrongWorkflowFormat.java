@@ -1,17 +1,20 @@
 package workflow.Exception;
 
 public class WrongWorkflowFormat extends Exception {
+
     public WrongWorkflowFormat() {
-        super();
+
     }
 
-    public WrongWorkflowFormat(String message) {
-        super(message);
+    public WrongWorkflowFormat(String msg) {
+        super(msg);
     }
 
-    @Override
-    public String getMessage() {
-        return super.getMessage();
+    public WrongWorkflowFormat(String msg, Throwable ex) {
+        super(msg, ex);
     }
 
+    public WrongWorkflowFormat(Throwable ex) {
+        super(ex);
+    }
 }

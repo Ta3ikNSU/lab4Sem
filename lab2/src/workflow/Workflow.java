@@ -9,6 +9,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 public class Workflow {
+    private static Logger log = Logger.getLogger(BlockFactory.class.getName());
 
     //desc
     //csed
@@ -45,10 +46,10 @@ public class Workflow {
             }
 
             try {
-                text = block.execute(text, args);
-                Logger.getLogger("WorkFlowLogger").info("Block " + blockName + " was created and executed");
+                block.execute(text, args);
+                log.info("Block " + blockName + " was created and executed");
             } catch (Exception e) {
-                Logger.getLogger("WorkFlowLogger").severe("An error occurred during block " + blockName + " execution\n" + e.getMessage());
+                log.severe("An error occurred during block " + blockName + " execution\n" + e.getMessage());
             }
         }
     }

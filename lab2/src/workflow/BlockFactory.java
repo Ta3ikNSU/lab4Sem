@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+
 public class BlockFactory {
-    private static BlockFactory factory = null;
+    private static Logger log = Logger.getLogger(BlockFactory.class.getName());
+
+    private static volatile BlockFactory factory = null;
     private final Properties properties = new Properties();
 
     private BlockFactory() throws IOException {
-        Logger.getLogger("WorkFlowLogger").info("Block factory creation completed successfully");
+        log.info("Block factory creation completed successfully");
         var input = BlockFactory.class.getResourceAsStream("blocks.properties");
 
         if (input != null) {
@@ -38,10 +41,9 @@ public class BlockFactory {
             var objectInstance = classOfBlock.getDeclaredConstructor().newInstance();
             block = (Block) objectInstance;
         } catch (Exception ex) {
-            Logger.getLogger("WorkFlowLogger").warning("block " + name + " was not found");
+            log.log(java.util.logging.Level.WARNING, "block " + name + " was not found", ex);
             return null;
         }
         return block;
-
     }
 }

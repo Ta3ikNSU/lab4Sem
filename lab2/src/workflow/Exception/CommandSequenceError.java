@@ -2,15 +2,18 @@ package workflow.Exception;
 
 public class CommandSequenceError extends Exception{
     public CommandSequenceError() {
-        super();
+
     }
 
-    public CommandSequenceError(String message) {
-        super(message);
+    public CommandSequenceError(String msg) {
+        super(msg);
     }
 
-    @Override
-    public String getMessage() {
-        return super.getMessage();
+    public CommandSequenceError(String msg, Throwable ex) {
+        super(msg, ex);
     }
+
+    public CommandSequenceError(Throwable ex) {
+        super(ex);
+}
 }

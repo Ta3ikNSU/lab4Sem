@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Dump implements Block {
     @Override
-    public ArrayList execute(ArrayList<String> text, Vector<String> args) throws Exception {
+    public void execute(ArrayList<String> text, Vector<String> args) throws Exception {
         if (args.size() != 1) {
             throw new WrongNumberOfArguments("Args for dump != 1");
         }
@@ -22,7 +22,7 @@ public class Dump implements Block {
         for(var i : text){
             printWriter.println(i);
         }
-        return text;
+        printWriter.close();
     }
 
     public BlockType getType() {

@@ -9,7 +9,7 @@ import java.util.Vector;
 
 public class Read implements Block {
     @Override
-    public ArrayList execute(ArrayList<String> text, Vector<String> args) throws Exception {
+    public void execute(ArrayList<String> text, Vector<String> args) throws Exception {
         if (args.size() != 1) throw new WrongNumberOfArguments("Args for read != 1");
         String fileName = args.get(0);
         String line;
@@ -19,7 +19,6 @@ public class Read implements Block {
             line = input.nextLine();
             text.add(line);
         }
-        return text;
     }
 
     public BlockType getType() {
