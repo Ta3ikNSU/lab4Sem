@@ -13,7 +13,6 @@ public class TranportCompany {
 
     public TranportCompany() {
         consumersAndFactories = new ArrayList<>();
-        startWork();
     }
 
     public void startWork() {
@@ -57,5 +56,12 @@ public class TranportCompany {
     public void stopWork(){
         depot.stop();
         consumersAndFactories.forEach(Thread::interrupt);
+        for (Thread consumersAndFactory : consumersAndFactories) {
+            try {
+                consumersAndFactory.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

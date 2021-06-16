@@ -19,7 +19,7 @@ public class ConfigCompany {
     private final HashMap<String, TrainInfo> trainsInfo;
     private final HashMap<String, ItemInfo> itemsInfo;
     private StationInfo stationInfo;
-
+    private Logger logger = Logger.getLogger(getClass().getName());
     public ConfigCompany() {
         this.itemsInfo = new HashMap<>();
         this.trainsInfo = new HashMap<>();
@@ -98,7 +98,7 @@ public class ConfigCompany {
                     ((Long) station.get("countTracksFromDepToDest")).intValue(),
                     ((Long) station.get("countTracksFromDestToDep")).intValue()
             );
-            Logger.getLogger(getClass().getName()).info("Config created successfully");
+            logger.info("Config created successfully");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }

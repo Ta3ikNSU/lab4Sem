@@ -7,7 +7,7 @@ public class Consumer extends Thread {
     public final Warehouse warehouse;
     private final String itemName;
     private final int timeForConsume;
-
+    private Logger logger = Logger.getLogger(getClass().getName());
     public Consumer(String itemName, Warehouse warehouse,  int timeForConsume) {
         this.warehouse = warehouse;
         this.itemName = itemName;
@@ -20,9 +20,10 @@ public class Consumer extends Thread {
             try {
                 Thread.sleep(timeForConsume);
                 warehouse.getItem();
-                Logger.getLogger(getClass().getName()).info("Consumer took the good: " + itemName + ";");
+                logger.info("Consumer took the good: " + itemName + ";");
             } catch (InterruptedException e) {
-                e.printStackTrace();Logger.getLogger(getClass().getName()).info("Consumer: " + itemName + " was stop;");
+                e.printStackTrace();
+                logger.info("Consumer: " + itemName + " was stop;");
                 e.printStackTrace();
                 return;
             }

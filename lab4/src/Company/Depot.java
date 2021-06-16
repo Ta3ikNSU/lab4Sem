@@ -14,13 +14,14 @@ public class Depot {
     private final RailwayInfo railways;
     private Queue<Train> trains; // поезда
     private ScheduledExecutorService executor;
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     public Depot(ConfigCompany configure, RailwayInfo railways) {
         this.railways = railways;
         this.trains = new ConcurrentLinkedQueue<>();
         this.executor = Executors.newScheduledThreadPool(configure.getTrainsNum());
         this.configure = configure;
-        Logger.getLogger(getClass().getName()).info("New depot was created");
+        logger.info("New depot was created");
     }
 
     public void addNewTrain(String name) {
@@ -29,10 +30,10 @@ public class Depot {
             @Override
             public void run() {
                 Train newTrain = new Train(name, configure, depot, railways);
-                Logger.getLogger(getClass().getName()).info("New train was created");
+                logger.info("New train was created");
                 trains.add(newTrain);
                 newTrain.start();
-                Logger.getLogger(getClass().getName()).info("New train start work");
+                logger.info("New train start work");
             }
         }, configure.getTrainInfo(name).getTimeToCreate(), TimeUnit.MILLISECONDS);
     }
@@ -40,7 +41,14 @@ public class Depot {
     public void stop() {
         executor.shutdownNow();
         trains.forEach(Thread::interrupt);
-        Logger.getLogger(getClass().getName()).info("All train was stopped");
+        for (Train train : trains) {
+            try {
+                train.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        logger.info("All train was stopped");
     }
 }
 

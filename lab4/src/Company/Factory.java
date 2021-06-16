@@ -6,13 +6,12 @@ public class Factory extends Thread {
     public final Warehouse warehouse;
     private final String itemName;
     private final int timeForCreate;
-
+    private Logger logger = Logger.getLogger(getClass().getName());
     public Factory(String itemName, Warehouse warehouse, int timeForCreate) {
         this.warehouse = warehouse;
         this.itemName = itemName;
         this.timeForCreate = timeForCreate;
-
-        Logger.getLogger(getClass().getName()).info("New Factory was created");
+        logger.info("New Factory was created");
     }
 
     @Override
@@ -23,14 +22,13 @@ public class Factory extends Thread {
                 Item newItem = new Item(itemName);
                 warehouse.addItem(newItem);
 
-                Logger.getLogger(getClass().getName()).info("Factory creat goods: " + itemName);
+                logger.info("Factory creat goods: " + itemName);
             } catch (InterruptedException e) {
                 e.printStackTrace();
 
                 return;
             }
         }
-        Logger.getLogger(getClass().getName()).info("Factory was stopped");
-
+        logger.info("Factory was stopped");
     }
 }

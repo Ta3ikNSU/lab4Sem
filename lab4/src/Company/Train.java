@@ -20,6 +20,8 @@ public class Train extends Thread {
     private int timeToAmortization;
     private RailwayInfo railwayInfo;
 
+    private Logger logger = Logger.getLogger(getClass().getName());
+
     public Train(String name, ConfigCompany conf, Depot depot, RailwayInfo railwayInfo) {
         this.isOff = false;
         this.name = name;
@@ -60,22 +62,19 @@ public class Train extends Thread {
         while (abs(startTime - Calendar.getInstance().getTimeInMillis()) < timeToAmortization) {
             try {
                 load(railwayInfo.getStationDepart());
-                Logger.getLogger(getClass().getName()).info("Train " + Thread.currentThread() + " " + name + " start moving");
+                logger.info("Train " + Thread.currentThread() + " " + name + " start moving");
                 railwayInfo.getFromFactoryToConsumer().getRailway();
                 Thread.sleep((long) ((double) railwayInfo.getFromFactoryToConsumer().getDistance() / (double) speed + 0.5));
                 railwayInfo.getFromFactoryToConsumer().trainLeaveFromRailway();
-                Logger.getLogger(getClass().getName()).info("Train " + Thread.currentThread() + " " + name + " start unloading");
+                logger.info("Train " + Thread.currentThread() + " " + name + " start unloading");
                 unload(railwayInfo.getStationArrive());
                 railwayInfo.getFromConsumerToFactory().getRailway();
                 Thread.sleep((long) ((double) railwayInfo.getFromConsumerToFactory().getDistance() / (double) speed + 0.5));
                 railwayInfo.getFromConsumerToFactory().trainLeaveFromRailway();
-
-                Logger.getLogger(getClass().getName()).info("Train " + Thread.currentThread() + " " + name + " is back");
+                logger.info("Train " + Thread.currentThread() + " " + name + " is back");
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                Logger.getLogger(getClass().getName()).info("Train " + Thread.currentThread() + " " + name + " was stopped");
-
-
+                logger.info("Train " + Thread.currentThread() + " " + name + " was stopped");
             }
         }
         depot.addNewTrain(name);
