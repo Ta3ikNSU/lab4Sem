@@ -9,10 +9,4 @@ public class Blob extends Entity{
         this.color = Color.CYAN;
     }
 
-    @Override
-    public void paint(Graphics g) {
-        g.setColor(color);
-        g.drawString("YOU", x , y);
-        g.fillOval(x, y, size, size);
-    }
 }

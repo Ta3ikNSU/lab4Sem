@@ -6,15 +6,18 @@ import observation.Observer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Vector;
 
 public class Model implements Observable {
     public GameStatus gameStatus;
     public int score = 30;
     public ArrayList<Observer> observers;
     long prevMoment = System.currentTimeMillis();
+    long prevMomentForUpdateSpeed = System.currentTimeMillis();
+    ;
     private Blob player = new Blob(30, 30, 50);
-    private ArrayList<Enemies> enemies = new ArrayList<Enemies>();
-    private ArrayList<Dot> dots = new ArrayList<Dot>();
+    private Vector<Enemies> enemies = new Vector<Enemies>();
+    private Vector<Dot> dots = new Vector<Dot>();
     private Render render;
 
     public Model() {
@@ -22,11 +25,11 @@ public class Model implements Observable {
         gameStatus = GameStatus.IN_PROCESS;
     }
 
-    public ArrayList<Enemies> getEnemies() {
+    public Vector<Enemies> getEnemies() {
         return enemies;
     }
 
-    public ArrayList<Dot> getDots() {
+    public Vector<Dot> getDots() {
         return dots;
     }
 
@@ -35,63 +38,91 @@ public class Model implements Observable {
     }
 
     public void doMove(Point move) {
-        if (System.currentTimeMillis() - prevMoment > 100) {
+        if (System.currentTimeMillis() - prevMoment > 20) {
             prevMoment = System.currentTimeMillis();
             if (enemies.size() < 2) {
                 if (enemies.size() == 0) {
-                    Enemies newEn = new Enemies(player.getX() + 500 % 900, player.getY(), player.size + player.size / 10);
+                    Enemies newEn = new Enemies((player.getX() + 500) % 900, player.getY(), player.size + player.size / 10);
                     enemies.add(newEn);
                 }
-                Enemies newEn = new Enemies(player.getX(), player.getY() + 500 % 900, player.size + player.size / 10);
+                Enemies newEn = new Enemies(player.getX(), (player.getY() + 500) % 900, player.size + player.size / 10);
                 enemies.add(newEn);
             }
-            System.out.println("move");
-            player.setX(player.getX() + ((int) move.getX() - 450) / 20);
-            player.setY(player.getY() + ((int) move.getY() - 450) / 20);
-            player.cordUdpate();
+            player.setX((int) (player.getX() + Math.abs(move.getX()-450) % 6 * Math.signum(move.getX() - 450)));
+            player.setY((int) (player.getY() + Math.abs(move.getY()-450) % 6  * Math.signum(move.getY() - 450)));
+            player.cordUpdate();
             Random rand = new Random();
-            for (var en : enemies) {
-                en.setX(en.getX() + rand.nextInt() % 900 / 20 * (rand.nextInt() % 2 - 1));
-                en.setY(en.getY() + rand.nextInt() % 900 / 20 * (rand.nextInt() % 2 - 1));
-                en.cordUdpate();
-
+            for (int i = 0; i < enemies.size(); i++) {
+                var en = enemies.get(i);
+//                if (System.currentTimeMillis() - prevMomentForUpdateSpeed > 500) {
+//                    en.setSpeedX((int) (Math.sin(System.currentTimeMillis()) * 10) * rand.nextInt()%2);
+//                    en.setSpeedY((int) (Math.sin(System.currentTimeMillis()) * 10) * rand.nextInt()%2);
+//                    prevMomentForUpdateSpeed = System.currentTimeMillis();
+//                }
+//                en.setX((int) (en.getX() + player.getX() * ((double) en.getSpeedX())/1000));
+//                en.setY((int) (en.getY() + player.getY() * ((double) en.getSpeedY())/1000));
+                en.setX(en.getX() + rand.nextInt() % 5);
+                en.setY(en.getY() + rand.nextInt() % 5);
+                en.cordUpdate();
             }
-
             if (dots.size() < 10) {
-                dots.add(new Dot(rand.nextInt() % 900, rand.nextInt() % 900, player.size / 5));
+                Dot newDot = new Dot(rand.nextInt() % 450 + 450, rand.nextInt() % 450 + 450, player.size / 5);
+                dots.add(newDot);
             }
-
             gameAnalysis();
         }
     }
 
     public void gameAnalysis() {
-        if (score > 2500) {
+        if (score < 600 && score > 0) {
+            Point cordOfCenterOfPlarsCircle = new Point(player.getX() + player.getSizePoint(), player.getY() + player.getSizePoint());
+            for (int i = 0; i < enemies.size(); i++) {
+                Enemies en = enemies.get(i);
+                Point cordOfCenterOfEnemsCircle = new Point(en.getX() + en.getSizePoint(), en.getY() + en.getSizePoint());
+                if (Math.sqrt
+                        (Math.pow((cordOfCenterOfEnemsCircle.getX() - cordOfCenterOfPlarsCircle.getX()), 2)
+                                +
+                                (Math.pow((cordOfCenterOfEnemsCircle.getY() - cordOfCenterOfPlarsCircle.getY()), 2))
+                        ) <= player.getSizePoint() + en.getSizePoint()) {
+                    if (en.getSizePoint() > player.getSizePoint())
+                        gameStatus = GameStatus.LOSE;
+                    else enemies.remove(en);
+                }
+            }
+            for (int i = 0; i < dots.size(); i++) {
+                Dot dot = dots.get(i);
+                Point cordOfCenterOfDotsCircle = new Point(dot.getX() + dot.getSizePoint(), dot.getY() + dot.getSizePoint());
+                if (Math.sqrt
+                        (Math.pow((cordOfCenterOfDotsCircle.getX() - cordOfCenterOfPlarsCircle.getX()), 2)
+                                +
+                                (Math.pow((cordOfCenterOfDotsCircle.getY() - cordOfCenterOfPlarsCircle.getY()), 2))
+                        ) <= player.getSizePoint() + dot.getSizePoint()) {
+                    score += dot.size;
+                    player.setSize(player.getSizePoint() + dot.size);
+                    dots.remove(dot);
+                }
+                for (int j = 0; j < enemies.size(); j++) {
+                    Enemies en = enemies.get(j);
+                    Point cordOfCenterOfEnemsCircle = new Point(en.getX() + en.getSizePoint(), en.getY() + en.getSizePoint());
+                    if (Math.sqrt
+                            (Math.pow((cordOfCenterOfEnemsCircle.getX() - cordOfCenterOfDotsCircle.getX()), 2)
+                                    +
+                                    (Math.pow((cordOfCenterOfEnemsCircle.getY() - cordOfCenterOfDotsCircle.getY()), 2))
+                            ) <= en.getSizePoint() + dot.getSizePoint()) {
+                        en.size += dot.size;
+                        dots.remove(dot);
+                    }
+                }
+            }
+            notifyObservers();
+        }
+        if (score > 600) {
             System.out.println("Your win");
             gameStatus = GameStatus.WIN;
         } else if (score == 0) {
             System.out.println("Your lose");
             gameStatus = GameStatus.LOSE;
-        } else {
-            for (var en : enemies) {
-                if (Math.sqrt
-                        (Math.pow((en.getX() + en.getSizePoint()) - (player.getX() + player.getSizePoint()), 2)
-                                - Math.pow((en.getY() + en.getSizePoint()) - (player.getY() + player.getSizePoint()), 2))
-                        < en.getSizePoint() + player.getSizePoint()) {
-                    gameStatus = GameStatus.LOSE;
-                }
-            }
-            for (var dot : dots) {
-                if (Math.sqrt
-                        (Math.pow((dot.getX() + dot.getSizePoint()) - (player.getX() + player.getSizePoint()), 2)
-                                - Math.pow((dot.getY() + dot.getSizePoint()) - (player.getY() + player.getSizePoint()), 2))
-                        < dot.getSizePoint() + player.getSizePoint()) {
-                    score+=dot.size;
-                    dots.remove(dot);
-                }
-            }
         }
-        notifyObservers();
     }
 
     @Override

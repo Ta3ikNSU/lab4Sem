@@ -13,10 +13,4 @@ public class Dot extends Entity {
         int blue = rand.nextInt(255);
         this.color = new Color(red, green, blue);
     }
-
-    @Override
-    public void paint(Graphics g) {
-        g.setColor(color);
-        g.fillOval(x, y, size, size);
-    }
 }

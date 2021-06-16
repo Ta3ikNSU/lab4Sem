@@ -27,13 +27,15 @@ public abstract class Entity {
         this.size = newSize;
     }
 
-    protected abstract void paint(Graphics g);
-
-    protected void cordUdpate(){
+    protected void cordUpdate(){
         if (this.x < 0) this.x = this.size / 2;
         if (this.y < 38) this.y = 38 + this.size / 2;
         if (this.x + this.size > 895)  this.x = (895 - this.size);
         if (this.y + this.size > 895) this.y = (895 - this.size);
+    }
+
+    public Color getColor(){
+        return color;
     }
 
     protected Entity(int x, int y, int size){
