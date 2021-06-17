@@ -30,12 +30,12 @@ public class ServerHandler extends Thread {
             try {
                 getMessage = gson.fromJson(in.readUTF(), Message.class);
                 if(getMessage.getType() == Message.MessageType.LOGIN){
-                    sendAll(gson.toJson(new Message(Message.MessageType.INFO, "Say hello to " + getMessage.getBody())));
+                    sendAll(gson.toJson(new Message(Message.MessageType.LOGIN, getMessage.getBody(), getMessage.getName())));
                     System.out.println("Say hello to " + getMessage.getBody());
                 }
 
                 if(getMessage.getType() == Message.MessageType.MESSAGE){
-                    sendAll(gson.toJson(new Message(Message.MessageType.MESSAGE, getMessage.getBody())));
+                    sendAll(gson.toJson(new Message(Message.MessageType.MESSAGE, getMessage.getBody(), getMessage.getName())));
                     System.out.println(getMessage.getBody());
                 }
 
@@ -44,7 +44,7 @@ public class ServerHandler extends Thread {
                     this.socket.close();
                     in.close();
                     out.close();
-                    sendAll(gson.toJson(new Message(Message.MessageType.INFO, "Say goodbye to " + getMessage.getBody())));
+                    sendAll(gson.toJson(new Message(Message.MessageType.INFO, "Say goodbye to ", getMessage.getName())));
                     break;
                 }
             } catch (IOException e) {
@@ -58,6 +58,7 @@ public class ServerHandler extends Thread {
             vr.send(json);
         }
     }
+
     private void send(String msg) {
         try {
             out.writeUTF(msg);

@@ -30,7 +30,7 @@ public class ClientHandler {
         chatFrame.setSize(new Dimension(600, 400));
         chatFrame.setBounds(600, 300, 600, 500);
 //        chatFrame.setResizable(false);
-        chatFrame.setTitle("Chat");
+
         chatFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         jtaTextAreaMessage = new JTextArea();
@@ -78,6 +78,7 @@ public class ClientHandler {
         new ReadMsg().start();
         new WriteMsg().start();
         getNickname();
+        chatFrame.setTitle(name);
         chatFrame.setVisible(true);
     }
 
@@ -110,7 +111,8 @@ public class ClientHandler {
                 e.printStackTrace();
             }
             try {
-                outputStream.writeUTF(gson.toJson(new Message(Message.MessageType.LOGIN, name)));
+                outputStream.writeUTF(gson.toJson(new Message(Message.MessageType.LOGIN, name, "Server")));
+                outputStream.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -136,8 +138,16 @@ public class ClientHandler {
             String input;
             try {
                 while (true) {
-                    input = inputStream.readUTF();
-                    jtaTextAreaMessage.append(input + "\n");
+                    Message getmsg = gson.fromJson(inputStream.readUTF(), Message.class);
+                    if(getmsg.getType() == Message.MessageType.MESSAGE){
+                        jtaTextAreaMessage.append(getmsg.getName() +  ": " +  getmsg.getBody() + "\n");
+                    }
+
+                    if(getmsg.getType() == Message.MessageType.LOGIN){
+                        jtaTextAreaMessage.append(getmsg.getName() +  ": Say hello to" +  getmsg.getBody() + "\n");
+                    }
+//                    input = inputStream.readUTF();
+//                    jtaTextAreaMessage.append(input + "\n");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -154,11 +164,13 @@ public class ClientHandler {
                         synchronObj1.wait();
                     }
                     if (!text.equals("/exit")) {
-                        Message msg = new Message(Message.MessageType.MESSAGE, text);
+                        Message msg = new Message(Message.MessageType.MESSAGE, text, name);
                         outputStream.writeUTF(gson.toJson(msg));
+                        outputStream.flush();
                         System.out.println(text);
                     } else {
-                        outputStream.writeUTF(gson.toJson(new Message(Message.MessageType.LOGOUT, "")));
+                        outputStream.writeUTF(gson.toJson(new Message(Message.MessageType.LOGOUT, "", name)));
+                        outputStream.flush();
                         offHandler();
                         break;
                     }
