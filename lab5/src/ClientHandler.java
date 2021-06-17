@@ -25,10 +25,11 @@ public class ClientHandler {
     private String text = "";
     private JTextArea jtaTextAreaMessage;
 
-    public ClientHandler(String ip, int port) {
+    public ClientHandler(String ipHost, int port) {
         chatFrame = new JFrame();
         chatFrame.setSize(new Dimension(600, 400));
-        chatFrame.setResizable(false);
+        chatFrame.setBounds(600, 300, 600, 500);
+//        chatFrame.setResizable(false);
         chatFrame.setTitle("Chat");
         chatFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,7 +53,7 @@ public class ClientHandler {
                     synchronized (synchronObj1) {
                         synchronObj1.notify();
                     }
-                    text = e.getActionCommand();
+                    text = jtfMessage.getText();
                     jtfMessage.grabFocus();
                 }
             }
@@ -67,7 +68,7 @@ public class ClientHandler {
 
 
         try {
-            this.socket = new Socket(ip, port);
+            this.socket = new Socket(ipHost, port);
             inputStream = new ObjectInputStream(socket.getInputStream());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
@@ -153,7 +154,9 @@ public class ClientHandler {
                         synchronObj1.wait();
                     }
                     if (!text.equals("/exit")) {
-                        outputStream.writeUTF(gson.toJson(new Message(Message.MessageType.MESSAGE, text)));
+                        Message msg = new Message(Message.MessageType.MESSAGE, text);
+                        outputStream.writeUTF(gson.toJson(msg));
+                        System.out.println(text);
                     } else {
                         outputStream.writeUTF(gson.toJson(new Message(Message.MessageType.LOGOUT, "")));
                         offHandler();

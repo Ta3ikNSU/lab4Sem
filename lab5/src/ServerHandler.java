@@ -25,15 +25,18 @@ public class ServerHandler extends Thread {
     @Override
     public void run() {
         Message getMessage;
+        String json;
         while(true){
             try {
                 getMessage = gson.fromJson(in.readUTF(), Message.class);
                 if(getMessage.getType() == Message.MessageType.LOGIN){
                     sendAll(gson.toJson(new Message(Message.MessageType.INFO, "Say hello to " + getMessage.getBody())));
+                    System.out.println("Say hello to " + getMessage.getBody());
                 }
 
                 if(getMessage.getType() == Message.MessageType.MESSAGE){
                     sendAll(gson.toJson(new Message(Message.MessageType.MESSAGE, getMessage.getBody())));
+                    System.out.println(getMessage.getBody());
                 }
 
                 if (getMessage.getType() == Message.MessageType.LOGOUT) {

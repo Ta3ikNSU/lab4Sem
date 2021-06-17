@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server {
-    public static final int PORT = 8080;
+    public static final int PORT = 3443;
     public static List<ServerHandler> serverList = new CopyOnWriteArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        ServerSocket server = new ServerSocket(PORT,50, InetAddress.getLocalHost());
+        ServerSocket server = new ServerSocket(PORT);
         System.out.println("Server Started");
         try {
             while (true) {
